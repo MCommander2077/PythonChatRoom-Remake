@@ -30,6 +30,7 @@ class Client:
         if self.client.recv(1024).decode('utf-8') == 'False':
             self.client.close()
             sys.exit("KEY VERIFICATION FAILED")
+        Bool_Is_Connect = True
 
     def send(self):
         while Bool_Is_Connect:
@@ -43,17 +44,23 @@ class Client:
 
     def disconnect(self):
         self.client.close()
+        Bool_Is_Connect = False
 
 
-client = Client()
-client.connect('127.0.0.1', 50583)
+def main():
+    client = Client()
+    client.connect('127.0.0.1', 50583)
 
-thread_send = threading.Thread(target=client.send)
-thread_receive = threading.Thread(target=client.receive)
+    thread_send = threading.Thread(target=client.send)
+    thread_receive = threading.Thread(target=client.receive)
 
-thread_send.start()
-thread_receive.start()
+    thread_send.start()
+    thread_receive.start()
 
+    client.disconnect()
+
+if __name__ == '__main__':
+    main()
 
 root = ctk.CTk()
 root.title("TCP Client")
@@ -63,4 +70,3 @@ root.config(bg="pink")
 root.columnconfigure(0, weight=1)
 root.mainloop()
 
-client.disconnect()

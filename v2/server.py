@@ -58,14 +58,16 @@ class Handler(BaseRequestHandler):
             showinfo(f'{address} KEY verification FAILED.disconnect.')
             return False
 
-        while True:
+        msg_num = 0
+        while msg_num >= 100:
             data = self.request.recv(1024).decode('utf-8')
+            msg_num = msg_num + 1
             if len(data) <= -1:
                 showwarning(f'{address} disconnected!')
                 break
             showinfo(f'user {address} send data:" {data} "')
             self.request.sendall(f'{data}'.encode())
-        showinfo(f'{address} disconnected')
+        showinfo(f'{address} disconnected because send number over 1000')
 
 
 def serve():
