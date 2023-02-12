@@ -1,9 +1,24 @@
-import customtkinter as ctk
-import tkinter as tk
 import socket
+import sys
 import threading
 import time
-import sys
+import tkinter as tk
+import tkinter.messagebox as tkm
+
+import customtkinter as ctk
+import hashlib
+
+from md5 import get_file_md5
+
+try:
+    md5 = get_file_md5("client.py")
+except:
+    try:
+        md5 = get_file_md5("client.exe")
+    except BaseException as error:
+        tkm.showerror("ERROR",message=f"{error}\n请将本程序重命名为client.exe")
+
+print(md5)
 
 Bool_Is_Connect = False
 Str_Send_Message = ""
@@ -24,7 +39,11 @@ class Client:
         self.client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
     def connect(self, server_ip, server_port):
-        self.client.connect((server_ip, server_port))
+        try:
+            self.client.connect((server_ip, server_port))
+        except BaseException as error:
+            tkm.showerror("ERROR",f"{error}\n请检查服务器是否开启")
+            sys.exit(error)
         # 验证
         self.client.send(verification_KEY.encode())
         if self.client.recv(1024).decode('utf-8') == 'False':
